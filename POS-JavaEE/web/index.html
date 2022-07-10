@@ -67,11 +67,11 @@
                 <table class="table caption-top table-hover" id="CustomerTable">
                     <caption>All Customer List</caption>
                     <thead class="table-dark">
-                    <tr>
+                    <tr id="CustomerTR">
                         <th scope="col">Customer ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">Address</th>
-                        <th scope="col">Salary</th>
+                        <th scope="col">Contact Number</th>
                     </tr>
                     </thead>
                     <tbody id="CustomerTableBody">
@@ -101,7 +101,7 @@
                     <input class="form-control" id="CusAddr" type="text" placeholder="Customer Address" aria-label="default input example">
                     <p><small id="warning3" class="text-danger"></small></p>
 
-                    <input class="form-control" id="CusSala" type="text" placeholder="Customer Salary" aria-label="default input example">
+                    <input class="form-control" id="CusNum" type="text" placeholder="Contact Number" aria-label="default input example">
                     <p><small id="warning4" class="text-danger"></small></p>
 
                     <button type="button"  class="btn btn-primary btn-sm" id="save">Add Customer</button>
@@ -272,18 +272,47 @@
 <script>
 
     $("#btnTest").click(function (){
+        $("#CustomerTable>th").empty();
+        loadCustomerToTable();
+    });
 
-        console.log("Start");
+
+    function loadCustomerToTable(){
+
         $.ajax({
-            url:"Customer",
-            method:"GET",
-            // dataType:"json",
-            success:function (resp){
-                console.log(resp);
+            url: "Customer",
+             method: "GET",
+
+            success:function (response){
+                console.log("DONE");
+
+                for (const responseElement of response) {
+                    let row=`<tr><td>${responseElement.id}</td><td>${responseElement.name}</td><td>${responseElement.address}</td><td>${responseElement.number}</td></tr>`;
+
+                    $("#CustomerTable").append(row);
+                }
+                BindClickEvents();
             }
         });
-        console.log("End");
-    });
+
+    };
+
+    function BindClickEvents(){
+        $("#CustomerTable>tr").click(function (){
+            let id=$(this).children().eq(0).text();
+            let name=$(this).children().eq(1).text();
+            let address=$(this).children().eq(2).text();
+            let number=$(this).children().eq(3).text();
+
+            $("#CustID").val(id);
+            $("#CustName").val(name);
+            $("#CustAddress").val(address);
+            $("#CusNum").val(number);
+
+        });
+    }
+
+
 
 
 

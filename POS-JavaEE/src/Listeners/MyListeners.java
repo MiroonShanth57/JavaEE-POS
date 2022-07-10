@@ -18,7 +18,7 @@ public class MyListeners implements ServletContextListener{
         BasicDataSource basicDataSource = new BasicDataSource();
 
         basicDataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        basicDataSource.setUrl("jdbc:mysql://localhost:3306/AppOne?useSSL=false");
+        basicDataSource.setUrl("jdbc:mysql://localhost:3306/JavaEEPOS?useSSL=false");
         basicDataSource.setUsername("root");
         basicDataSource.setPassword("1234");
 
