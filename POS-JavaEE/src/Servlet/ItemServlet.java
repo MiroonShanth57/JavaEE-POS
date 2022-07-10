@@ -20,6 +20,7 @@ public class ItemServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        System.out.println("Item get..");
 
         ServletContext servletContext = req.getServletContext();
         BasicDataSource basicDataSource = (BasicDataSource) servletContext.getAttribute("basicDataSource");
@@ -75,10 +76,10 @@ public class ItemServlet extends HttpServlet {
 
         resp.setContentType("application/json");
 
-        String code = req.getParameter("code");
-        String name = req.getParameter("name");
-        String quantity = req.getParameter("quantity");
-        String price = req.getParameter("price");
+        String code = req.getParameter("itemCode");
+        String name = req.getParameter("itemName");
+        String quantity = req.getParameter("itemQuantity");
+        String price = req.getParameter("itemPrice");
 
         try {
             Connection connection = basicDataSource.getConnection();
@@ -114,7 +115,7 @@ public class ItemServlet extends HttpServlet {
         ServletContext servletContext = req.getServletContext();
         BasicDataSource basicDataSource = (BasicDataSource) servletContext.getAttribute("basicDataSource");
 
-        String item_code=req.getParameter("code");
+        String item_code=req.getParameter("itmCode");
         PrintWriter writer = resp.getWriter();
         resp.setContentType("application/json");
 
@@ -160,10 +161,10 @@ public class ItemServlet extends HttpServlet {
         JsonReader reader = Json.createReader(req.getReader());
         JsonObject jsonObject = reader.readObject();
 
-        String code = jsonObject.getString("code");
-        String name = jsonObject.getString("name");
-        String quantity = jsonObject.getString("quantity");
-        String price = jsonObject.getString("price");
+        String code = jsonObject.getString("itemCode");
+        String name = jsonObject.getString("itemName");
+        String quantity = jsonObject.getString("itemQuantity");
+        String price = jsonObject.getString("itemPrice");
 
         PrintWriter writer=resp.getWriter();
         System.out.println(code + "--"+name+"--" +quantity+"--"+price);

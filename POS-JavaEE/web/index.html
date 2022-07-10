@@ -176,6 +176,13 @@
                     </tr>
                     </thead>
                     <tbody id="ItemTableBody">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
 
                     </tbody>
                 </table>
@@ -190,24 +197,35 @@
         </div>
 
         <div class="row my-5">
-            <div class="col-md-10 position-relative">
-                <div class="p-2 d-grid gap-2 position-absolute top-50 start-50">
-                    <input class="form-control" type="text" placeholder="Item Code" aria-label="default input example" id="ItemId">
-                    <p><small id="error1"></small></p>
+            <div class="col-4">
+                <form id="ItemForm">
+                    <div class="mb-3">
+                        <label class="form-label" for="itemCode">Item Code</label>
+                        <input class="form-control" id="itemCode" name="itemCode" placeholder="Item Code" type="text">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="itemName">Item Name</label>
+                        <input class="form-control" id="itemName" name="itemName" placeholder="Item Name"
+                               type="text">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="itemQuantity">Item Quantity</label>
+                        <input class="form-control" id="itemQuantity" name="itemQuantity" placeholder="Item Quantity"
+                               type="text">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="itemPrice">Item Price</label>
+                        <input class="form-control" id="itemPrice" name="itemPrice" placeholder="Item Price"
+                               type="text">
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-primary" id="btnSaveItem" type="button">Save</button>
+                        <button class="btn btn-warning" id="btnUpdateItem" type="button">Update</button>
+                        <button class="btn btn-warning" id="btnDeleteItem" type="button">Delete</button>
 
-                    <input class="form-control" type="text" placeholder="Item Name" aria-label="default input example" id="ItemName">
-                    <p><small id="error2"></small></p>
 
-                    <input class="form-control" type="text" placeholder="Item Quantity" aria-label="default input example" id="ItemQuantity">
-                    <p><small id="error3"></small></p>
-
-                    <input class="form-control" type="text" placeholder="Item Price" aria-label="default input example" id="ItemPrice">
-                    <p><small id="error4"></small></p>
-
-                    <button type="button" class="btn btn-primary btn-sm" id="btnSave">Add Item</button>
-
-                    <button type="button" class="btn btn-secondary btn-sm" id="btnUpdate">Update Item</button>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -311,10 +329,11 @@
 <script src="assets/JQuery/jquery-3.6.0.min.js"></script>
 
 <script>
-
+    loadCustomerToTable();
+    loadItemToTable();
 <!--    Customer Part-->
 
-    loadCustomerToTable();
+
 
     $("#btnTest").click(function (){
 
@@ -421,6 +440,106 @@
 
 
 
+
+$("#btnSaveItem").click(function (){
+    let serialize = $("#ItemForm").serialize();
+    console.log(serialize);
+    $.ajax({
+        url: "Item",
+        method: "POST",
+        data:serialize,
+
+
+        success:function (response){
+
+            alert(response);
+
+            loadItemToTable();
+        }
+    });
+
+});
+
+$("#btnUpdateItem").click(function (){
+
+    var cusOb = {
+        code: $("#itemCode").val(),
+        name: $("#itemName").val(),
+        quantity: $("#itemQuantity").val(),
+        price: $("#itemPrice").val()
+    }
+
+    console.log(cusOb);
+
+    $.ajax({
+        url: "Item",
+        method: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify(cusOb),
+        success: function (response) {
+            console.log(response)
+            loadItemToTable();
+
+
+        }
+
+    });
+});
+
+$("#btnDeleteCustomer").click(function (){
+
+    let itemCode = $("#itemCode").val();
+
+    $.ajax({
+        url: "Item?ItemCode=" + itemCode,
+        method: "DELETE",
+
+        success: function (res) {
+            console.log(res);
+            loadCustomerToTable();
+        }
+    });
+});
+
+
+
+
+
+function loadItemToTable(){
+
+    $("#ItemTableBody").empty();
+    $.ajax({
+        url: "Item",
+        method: "GET",
+
+        success:function (response){
+            console.log("DONE");
+
+            for (const responseElement of response) {
+                let row=`<tr><td>${responseElement.code}</td><td>${responseElement.name}</td><td>${responseElement.quantity}</td><td>${responseElement.price}</td></tr>`;
+
+                $("#ItemTable").append(row);
+            }
+            BindClickEventsItem();
+        }
+    });
+
+};
+
+function BindClickEventsItem(){
+    $("#ItemTableBody>tr").click(function (){
+        let code=$(this).children().eq(0).text();
+        let name=$(this).children().eq(1).text();
+        let quantity=$(this).children().eq(2).text();
+        let price=$(this).children().eq(3).text();
+
+        $("#itemCode").val(code);
+        $("#itemName").val(name);
+        $("#itemQuantity").val(quantity);
+        $("#itemPrice").val(price);
+
+    });
+};
 
 
 
