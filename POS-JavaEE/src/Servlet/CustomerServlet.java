@@ -2,9 +2,7 @@ package Servlet;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
+import javax.json.*;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,6 +19,7 @@ public class CustomerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("I am Get");
 
         ServletContext servletContext = req.getServletContext();
         BasicDataSource basicDataSource = (BasicDataSource) servletContext.getAttribute("basicDataSource");
@@ -76,10 +75,10 @@ public class CustomerServlet extends HttpServlet {
 
         resp.setContentType("application/json");
 
-        String customer_id = req.getParameter("Customer Id");
-        String customer_name = req.getParameter("Customer Name");
-        String customer_address = req.getParameter("Customer Address");
-        String customer_number = req.getParameter("Number");
+        String customer_id = req.getParameter("customerID");
+        String customer_name = req.getParameter("customerName");
+        String customer_address = req.getParameter("customerAddress");
+        String customer_number = req.getParameter("customerNumber");
 
         try {
             Connection connection = basicDataSource.getConnection();
@@ -108,43 +107,58 @@ public class CustomerServlet extends HttpServlet {
 
     }
 
+
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("hekkkk");
+    }
+
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        System.out.println("I am Working");
 
         ServletContext servletContext = req.getServletContext();
         BasicDataSource basicDataSource = (BasicDataSource) servletContext.getAttribute("basicDataSource");
 
-        String customer_id = req.getParameter("Customer Id");
-        String customer_name = req.getParameter("Customer Name");
-        String customer_address = req.getParameter("Customer Address");
-        String number = req.getParameter("Contuct_Number");
+        JsonReader reader = Json.createReader(req.getReader());
+        JsonObject jsonObject = reader.readObject();
 
+
+        String customer_id = jsonObject.getString("id");
+        String customer_name = jsonObject.getString("name");
+        String customer_address = jsonObject.getString("address");
+        String number = jsonObject.getString("number");
+
+        PrintWriter writer=resp.getWriter();
         System.out.println(customer_id + "--"+customer_name+"--" +customer_address+"--"+number);
 
-
+        resp.setContentType("application/json");
         try {
 
 
-            resp.setContentType("application/json");
-            resp.addHeader("Shop","MK");
+
 
             Connection connection = basicDataSource.getConnection();
 
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Customer SET Customer_Name=?, Customer_Address=?, Contuct_Number=? WHERE Id=?");
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Customer SET Customer_Name=?, Customer_Address=?, Contuct_Number=? WHERE Customer_Id=?");
 
-            preparedStatement.setObject(4,customer_id);
             preparedStatement.setObject(1,customer_name);
             preparedStatement.setObject(2,customer_address);
             preparedStatement.setObject(3,number);
+            preparedStatement.setObject(4,customer_id);
 
             boolean AddCustomer=preparedStatement.executeUpdate()>0;
 
-            PrintWriter writer = resp.getWriter();
 
             if (AddCustomer){
+                JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+                writer.print(objectBuilder.build());
+
                 writer.write("Successfully Updated Your Customer Details");
             }else {
+                JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+                writer.print(objectBuilder.build());
+
                 writer.write("Try Again...");
             }
 
@@ -154,8 +168,13 @@ public class CustomerServlet extends HttpServlet {
         }
 
 
-
     }
+
+
+
+
+
+
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

@@ -75,6 +75,12 @@
                     </tr>
                     </thead>
                     <tbody id="CustomerTableBody">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
 
                     </tbody>
                 </table>
@@ -90,25 +96,58 @@
 
         <div class="row my-5">
 
-            <div class="col-md-12">
-                <div class="p-2 d-grid gap-2 top-50 start-50">
-                    <input class="form-control" id="CusID" type="text" placeholder="Customer ID" aria-label="default input example">
-                    <p><small id="warning" class="text-danger"></small></p>
+<!--            <div class="col-md-12">-->
+<!--                <form id="CusForm">-->
+<!--                <div class="p-2 d-grid gap-2 top-50 start-50" i>-->
+<!--                    <input class="form-control" id="CusID" type="text" placeholder="Customer ID" aria-label="default input example">-->
+<!--                    <p><small id="warning" class="text-danger"></small></p>-->
 
-                    <input class="form-control" id="CusName" type="text" placeholder="Customer Name" aria-label="default input example">
-                    <p><small id="warning2" class="text-danger"></small></p>
+<!--                    <input class="form-control" id="CusName" type="text" placeholder="Customer Name" aria-label="default input example">-->
+<!--                    <p><small id="warning2" class="text-danger"></small></p>-->
 
-                    <input class="form-control" id="CusAddr" type="text" placeholder="Customer Address" aria-label="default input example">
-                    <p><small id="warning3" class="text-danger"></small></p>
+<!--                    <input class="form-control" id="CusAddr" type="text" placeholder="Customer Address" aria-label="default input example">-->
+<!--                    <p><small id="warning3" class="text-danger"></small></p>-->
 
-                    <input class="form-control" id="CusNum" type="text" placeholder="Contact Number" aria-label="default input example">
-                    <p><small id="warning4" class="text-danger"></small></p>
+<!--                    <input class="form-control" id="CusNum" type="text" placeholder="Contact Number" aria-label="default input example">-->
+<!--                    <p><small id="warning4" class="text-danger"></small></p>-->
 
-                    <button type="button"  class="btn btn-primary btn-sm" id="save">Add Customer</button>
+<!--                    <button type="button"  class="btn btn-primary btn-sm" id="save">Add Customer</button>-->
 
-                    <button type="button" class="btn btn-secondary btn-sm" id="update">Update Customer</button>
-                </div>
+<!--                    <button type="button" class="btn btn-secondary btn-sm" id="update">Update Customer</button>-->
+<!--                </div>-->
+<!--                </form>-->
+<!--            </div>-->
+
+            <div class="col-4">
+                <form id="customerForm">
+                    <div class="mb-3">
+                        <label class="form-label" for="cusID">Customer ID</label>
+                        <input class="form-control" id="cusID" name="customerID" placeholder="Customer ID" type="text">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="cusName">Customer Name</label>
+                        <input class="form-control" id="cusName" name="customerName" placeholder="Customer Name"
+                               type="text">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="cusAddress">Customer Address</label>
+                        <input class="form-control" id="cusAddress" name="customerAddress" placeholder="Customer Address"
+                               type="text">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="cusNumber">Contact Number</label>
+                        <input class="form-control" id="cusNumber" name="customerNumber" placeholder="Contact Number"
+                               type="text">
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-primary" id="btnSaveCustomer" type="button">Save</button>
+                        <button class="btn btn-warning" id="btnUpdateCustomer" type="button">Update</button>
+
+                    </div>
+                </form>
             </div>
+
+
         </div>
 
     </div>
@@ -271,14 +310,67 @@
 
 <script>
 
+    loadCustomerToTable();
+
     $("#btnTest").click(function (){
-        $("#CustomerTable>th").empty();
+
         loadCustomerToTable();
     });
 
 
+    $("#btnSaveCustomer").click(function (){
+        let serialize = $("#customerForm").serialize();
+        console.log(serialize);
+        $.ajax({
+            url: "Customer",
+            method: "POST",
+            data:serialize,
+
+
+            success:function (response){
+
+                alert(response);
+
+                loadCustomerToTable()
+            }
+        });
+
+    });
+
+    $("#btnUpdateCustomer").click(function (){
+
+        var cusOb = {
+            id: $("#cusID").val(),
+            name: $("#cusName").val(),
+            address: $("#cusAddress").val(),
+            Number: $("#cusNumber").val()
+        }
+
+        console.log(cusOb);
+
+        $.ajax({
+            url: "Customer",
+            method: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(cusOb),
+            success: function (response) {
+                console.log(response)
+                    loadCustomerToTable()
+
+
+            }
+
+        });
+    });
+
+
+
+
+
+
     function loadCustomerToTable(){
 
+        $("#CustomerTableBody").empty();
         $.ajax({
             url: "Customer",
              method: "GET",
@@ -298,19 +390,19 @@
     };
 
     function BindClickEvents(){
-        $("#CustomerTable>tr").click(function (){
+        $("#CustomerTableBody>tr").click(function (){
             let id=$(this).children().eq(0).text();
             let name=$(this).children().eq(1).text();
             let address=$(this).children().eq(2).text();
             let number=$(this).children().eq(3).text();
 
-            $("#CustID").val(id);
-            $("#CustName").val(name);
-            $("#CustAddress").val(address);
-            $("#CusNum").val(number);
+            $("#cusID").val(id);
+            $("#cusName").val(name);
+            $("#cusAddress").val(address);
+            $("#cusNumber").val(number);
 
         });
-    }
+    };
 
 
 
@@ -319,16 +411,16 @@
 
 </script>
 <!--DataBase (Array)-->
-<script src="db/DataBase.js"></script>
+<!--<script src="db/DataBase.js"></script>-->
 <!--Controller-->
-<script src="Controller/CustomerController.js"></script>
-<script src="Controller/ItemController.js"></script>
-<script src="Controller/OrderController.js"></script>
+<!--<script src="Controller/CustomerController.js"></script>-->
+<!--<script src="Controller/ItemController.js"></script>-->
+<!--<script src="Controller/OrderController.js"></script>-->
 <script src="Controller/ControllerForAllFile.js"></script>
 <!--Modal-->
-<script src="Model/CustomerModel.js"></script>
-<script src="Model/ItemModel.js"></script>
-<script src="Model/OrderModel.js"></script>
+<!--<script src="Model/CustomerModel.js"></script>-->
+<!--<script src="Model/ItemModel.js"></script>-->
+<!--<script src="Model/OrderModel.js"></script>-->
 
 
 

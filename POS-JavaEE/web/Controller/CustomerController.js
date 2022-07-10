@@ -77,133 +77,133 @@ function LoadAllCustomer(){
 
 //////////////////Set the Customer details to the input fields///////////
 
-function SetTextToFieldsCustomer(){
-    $("#CustomerTableBody>tr").click(function (){
-        let CusID=$(this).children(":eq(0)").text();
-        let CusName=$(this).children(":eq(1)").text();
-        let CusAddress=$(this).children(":eq(2)").text();
-        let CusSalary=$(this).children(":eq(3)").text();
-
-        $("#CusID").val(CusID);
-        $("#CusName").val(CusName);
-        $("#CusAddr").val(CusAddress);
-        $("#CusSala").val(CusSalary);
-    });
-};
+// function SetTextToFieldsCustomer(){
+//     $("#CustomerTableBody>tr").click(function (){
+//         let CusID=$(this).children(":eq(0)").text();
+//         let CusName=$(this).children(":eq(1)").text();
+//         let CusAddress=$(this).children(":eq(2)").text();
+//         let CusSalary=$(this).children(":eq(3)").text();
+//
+//         $("#CusID").val(CusID);
+//         $("#CusName").val(CusName);
+//         $("#CusAddr").val(CusAddress);
+//         $("#CusSala").val(CusSalary);
+//     });
+// };
 
 ///////////////////////////////////////////////////////////
 
 ///////////////////Validation Part////////////////////////////////////////
 
-var CusIDRegEx =/^(C00-)[0-9]{3,4}$/;
-var CusNameRegEx =/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)$/;
-var CusAddressRegEx =/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)$/;
-var CusSalaryRegEx =/^(?:\d*\.)?\d+$/;
-$("#save").attr("disabled", true);
-$("#CusID").keyup(function (){
-
-    let input =$("#CusID").val();
-    if(CusIDRegEx.test(input)){
-        $("#CusID").css('border', '2px solid green');
-        $("#warning").text("Correct Format");
-        $("#warning").css('color','green');
-
-        $("#CusID").keydown(function (focusNextInput){
-
-            if(focusNextInput.key=="Enter"){
-
-                $("#CusName").focus();
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-                $("#CusName").keyup(function (){
-
-                    let input2=$("#CusName").val();
-                    if(CusNameRegEx.test(input2)){
-                        $("#CusName").css('border', '2px solid green');
-                        $("#warning2").text("Correct Format");
-                        $("#warning2").css('color','green');
-
-                        $("#CusName").keydown(function (focusNextInput){
-
-                            if(focusNextInput.key=="Enter"){
-                                $("#CusAddr").focus();
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                $("#CusAddr").keyup(function (){
-
-                                    let input3=$("#CusAddr").val();
-                                    if(CusAddressRegEx.test(input3)){
-                                        $("#CusAddr").css('border', '2px solid green');
-                                        $("#warning3").text("Correct Format");
-                                        $("#warning3").css('color','green');
-
-                                        $("#CusAddr").keydown(function (focusNextInput){
-
-                                            if(focusNextInput.key=="Enter"){
-                                                $("#CusSala").focus();
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-                                                $("#CusSala").keyup(function (){
-
-                                                    let input4=$("#CusSala").val();
-                                                    if(CusSalaryRegEx.test(input4)){
-                                                        $("#CusSala").css('border', '2px solid green');
-                                                        $("#warning4").text("Correct Format");
-                                                        $("#warning4").css('color','green');
-
-                                                        $("#save").removeAttr('disabled')
-
-                                                    }else{
-                                                        $("#CusSala").css('border', '2px solid red');
-                                                        $("#warning4").text("Entered Wrong Format");
-                                                        $("#CusSala").focus();
-                                                        $("#save").attr("disabled", true);
-                                                    }
-
-                                                });
-
-                                            }else {
-                                                $("#CusAddr").focus();
-                                            }
-                                        });
-
-
-                                    }else{
-                                        $("#CusAddr").css('border', '2px solid red');
-                                        $("#warning3").text("Entered Wrong Format");
-                                        $("#CusAddr").focus();
-                                        $("#save").attr("disabled", true);
-                                    }
-
-                                });
-
-                            }
-                            else{
-                                $("#CusName").focus();
-                            }
-                        });
-
-                    }else {
-
-                        $("#CusName").css('border', '2px solid red');
-                        $("#warning2").text("Entered Wrong Format");
-                        $("#CusName").focus();
-                        $("#save").attr("disabled", true);
-                    }
-                });
-
-            }else {
-                $("#CusID").focus();
-            }
-        });
-
-
-    }else {
-        $("#CusID").css('border', '2px solid red');
-        $("#warning").text("Entered Wrong Format. (C00-001)");
-        $("#CusID").focus();
-        $("#save").attr("disabled", true);
-    }
-
-});
+// var CusIDRegEx =/^(C00-)[0-9]{3,4}$/;
+// var CusNameRegEx =/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)$/;
+// var CusAddressRegEx =/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)$/;
+// var CusSalaryRegEx =/^(?:\d*\.)?\d+$/;
+// $("#save").attr("disabled", true);
+// $("#CusID").keyup(function (){
+//
+//     let input =$("#CusID").val();
+//     if(CusIDRegEx.test(input)){
+//         $("#CusID").css('border', '2px solid green');
+//         $("#warning").text("Correct Format");
+//         $("#warning").css('color','green');
+//
+//         $("#CusID").keydown(function (focusNextInput){
+//
+//             if(focusNextInput.key=="Enter"){
+//
+//                 $("#CusName").focus();
+//
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                 $("#CusName").keyup(function (){
+//
+//                     let input2=$("#CusName").val();
+//                     if(CusNameRegEx.test(input2)){
+//                         $("#CusName").css('border', '2px solid green');
+//                         $("#warning2").text("Correct Format");
+//                         $("#warning2").css('color','green');
+//
+//                         $("#CusName").keydown(function (focusNextInput){
+//
+//                             if(focusNextInput.key=="Enter"){
+//                                 $("#CusAddr").focus();
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                 $("#CusAddr").keyup(function (){
+//
+//                                     let input3=$("#CusAddr").val();
+//                                     if(CusAddressRegEx.test(input3)){
+//                                         $("#CusAddr").css('border', '2px solid green');
+//                                         $("#warning3").text("Correct Format");
+//                                         $("#warning3").css('color','green');
+//
+//                                         $("#CusAddr").keydown(function (focusNextInput){
+//
+//                                             if(focusNextInput.key=="Enter"){
+//                                                 $("#CusSala").focus();
+// /////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                 $("#CusSala").keyup(function (){
+//
+//                                                     let input4=$("#CusSala").val();
+//                                                     if(CusSalaryRegEx.test(input4)){
+//                                                         $("#CusSala").css('border', '2px solid green');
+//                                                         $("#warning4").text("Correct Format");
+//                                                         $("#warning4").css('color','green');
+//
+//                                                         $("#save").removeAttr('disabled')
+//
+//                                                     }else{
+//                                                         $("#CusSala").css('border', '2px solid red');
+//                                                         $("#warning4").text("Entered Wrong Format");
+//                                                         $("#CusSala").focus();
+//                                                         $("#save").attr("disabled", true);
+//                                                     }
+//
+//                                                 });
+//
+//                                             }else {
+//                                                 $("#CusAddr").focus();
+//                                             }
+//                                         });
+//
+//
+//                                     }else{
+//                                         $("#CusAddr").css('border', '2px solid red');
+//                                         $("#warning3").text("Entered Wrong Format");
+//                                         $("#CusAddr").focus();
+//                                         $("#save").attr("disabled", true);
+//                                     }
+//
+//                                 });
+//
+//                             }
+//                             else{
+//                                 $("#CusName").focus();
+//                             }
+//                         });
+//
+//                     }else {
+//
+//                         $("#CusName").css('border', '2px solid red');
+//                         $("#warning2").text("Entered Wrong Format");
+//                         $("#CusName").focus();
+//                         $("#save").attr("disabled", true);
+//                     }
+//                 });
+//
+//             }else {
+//                 $("#CusID").focus();
+//             }
+//         });
+//
+//
+//     }else {
+//         $("#CusID").css('border', '2px solid red');
+//         $("#warning").text("Entered Wrong Format. (C00-001)");
+//         $("#CusID").focus();
+//         $("#save").attr("disabled", true);
+//     }
+//
+// });
 
 
 ////////////////////remove Validation///////////////////////////////////////
