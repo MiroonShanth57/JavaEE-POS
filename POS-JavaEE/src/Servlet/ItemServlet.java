@@ -1,6 +1,11 @@
+package Servlet;
+
+import org.apache.commons.dbcp2.BasicDataSource;
+
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,12 +20,15 @@ public class ItemServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        ServletContext servletContext = req.getServletContext();
+        BasicDataSource basicDataSource = (BasicDataSource) servletContext.getAttribute("basicDataSource");
+
         try {
 
             resp.setContentType("application/json");
 
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JavaEEPOS","root","1234");
+            Connection connection = basicDataSource.getConnection();
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM Item").executeQuery();
 
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -51,7 +59,7 @@ public class ItemServlet extends HttpServlet {
             writer.print(arrayBuilder.build());
 
 
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -59,6 +67,9 @@ public class ItemServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ServletContext servletContext = req.getServletContext();
+        BasicDataSource basicDataSource = (BasicDataSource) servletContext.getAttribute("basicDataSource");
+
         resp.setContentType("application/json");
 
         String Item_Code = req.getParameter("ItemCode");
@@ -67,8 +78,7 @@ public class ItemServlet extends HttpServlet {
         String Item_Price = req.getParameter("Price");
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JavaEEPOS","root","1234");
+            Connection connection = basicDataSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Item VALUE (?,?,?,?)");
 
             preparedStatement.setObject(1,Item_Code);
@@ -87,7 +97,7 @@ public class ItemServlet extends HttpServlet {
             }
 
 
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -95,13 +105,16 @@ public class ItemServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        ServletContext servletContext = req.getServletContext();
+        BasicDataSource basicDataSource = (BasicDataSource) servletContext.getAttribute("basicDataSource");
+
         String Item_Code=req.getParameter("ItemCode");
         System.out.println(Item_Code);
         resp.setContentType("application/json");
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/JavaEEPOS?useSSL=false","root", "1234");
+            Connection connection = basicDataSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Item WHERE Item_Code=?");
 
             preparedStatement.setObject(1,Item_Code);
@@ -117,7 +130,7 @@ public class ItemServlet extends HttpServlet {
                 writer.write("Try Again...");
             }
 
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -129,6 +142,9 @@ public class ItemServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ServletContext servletContext = req.getServletContext();
+        BasicDataSource basicDataSource = (BasicDataSource) servletContext.getAttribute("basicDataSource");
+
         String Item_Code = req.getParameter("ItemCode");
         String Item_Name = req.getParameter("ItemName");
         String Item_Quantity = req.getParameter("ItemQuantity");
@@ -144,8 +160,7 @@ public class ItemServlet extends HttpServlet {
             resp.addHeader("Shop","MK");
 
 
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/JavaEEPOS","root", "1234");
+            Connection connection = basicDataSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Item SET Item_Name=?, Quantity=?, Price=? WHERE Item_=?");
 
             preparedStatement.setObject(4,Item_Code);
@@ -164,8 +179,6 @@ public class ItemServlet extends HttpServlet {
             }
 
 
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

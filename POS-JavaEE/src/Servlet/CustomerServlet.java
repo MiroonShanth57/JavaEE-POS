@@ -1,6 +1,11 @@
+package Servlet;
+
+import org.apache.commons.dbcp2.BasicDataSource;
+
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,12 +21,17 @@ public class CustomerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        ServletContext servletContext = req.getServletContext();
+        BasicDataSource basicDataSource = (BasicDataSource) servletContext.getAttribute("basicDataSource");
+
+
         try {
 
             resp.setContentType("application/json");
 
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JavaEEPOS","root","1234");
+            Connection connection = basicDataSource.getConnection();
+
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM Customer").executeQuery();
 
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -52,7 +62,7 @@ public class CustomerServlet extends HttpServlet {
             writer.print(arrayBuilder.build());
 
 
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -60,6 +70,9 @@ public class CustomerServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        ServletContext servletContext = req.getServletContext();
+        BasicDataSource basicDataSource = (BasicDataSource) servletContext.getAttribute("basicDataSource");
 
         resp.setContentType("application/json");
 
@@ -69,8 +82,8 @@ public class CustomerServlet extends HttpServlet {
         String customer_number = req.getParameter("Number");
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JavaEEPOS","root","1234");
+            Connection connection = basicDataSource.getConnection();
+
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Customer VALUE (?,?,?,?)");
 
             preparedStatement.setObject(1,customer_id);
@@ -89,7 +102,7 @@ public class CustomerServlet extends HttpServlet {
             }
 
 
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -97,6 +110,10 @@ public class CustomerServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+
+        ServletContext servletContext = req.getServletContext();
+        BasicDataSource basicDataSource = (BasicDataSource) servletContext.getAttribute("basicDataSource");
 
         String customer_id = req.getParameter("Customer Id");
         String customer_name = req.getParameter("Customer Name");
@@ -112,9 +129,8 @@ public class CustomerServlet extends HttpServlet {
             resp.setContentType("application/json");
             resp.addHeader("Shop","MK");
 
+            Connection connection = basicDataSource.getConnection();
 
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/AppOne","root", "1234");
             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Customer SET Customer_Name=?, Customer_Address=?, Contuct_Number=? WHERE Id=?");
 
             preparedStatement.setObject(4,customer_id);
@@ -133,8 +149,6 @@ public class CustomerServlet extends HttpServlet {
             }
 
 
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -146,13 +160,16 @@ public class CustomerServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        ServletContext servletContext = req.getServletContext();
+        BasicDataSource basicDataSource = (BasicDataSource) servletContext.getAttribute("basicDataSource");
+
         String customer_id=req.getParameter("CusID");
         System.out.println(customer_id);
         resp.setContentType("application/json");
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/JavaEEPOS?useSSL=false","root", "1234");
+            Connection connection = basicDataSource.getConnection();
+
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Customer WHERE Id=?");
 
             preparedStatement.setObject(1,customer_id);
@@ -168,7 +185,7 @@ public class CustomerServlet extends HttpServlet {
                 writer.write("Try Again...");
             }
 
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
