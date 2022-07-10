@@ -142,6 +142,8 @@
                     <div class="mb-3">
                         <button class="btn btn-primary" id="btnSaveCustomer" type="button">Save</button>
                         <button class="btn btn-warning" id="btnUpdateCustomer" type="button">Update</button>
+                        <button class="btn btn-warning" id="btnDeleteCustomer" type="button">Delete</button>
+
 
                     </div>
                 </form>
@@ -310,13 +312,14 @@
 
 <script>
 
+<!--    Customer Part-->
+
     loadCustomerToTable();
 
     $("#btnTest").click(function (){
 
         loadCustomerToTable();
     });
-
 
     $("#btnSaveCustomer").click(function (){
         let serialize = $("#customerForm").serialize();
@@ -363,10 +366,20 @@
         });
     });
 
+    $("#btnDeleteCustomer").click(function (){
 
+        let customerID = $("#cusID").val();
 
+        $.ajax({
+            url: "Customer?CusID=" + customerID,
+            method: "DELETE",
 
-
+            success: function (res) {
+                console.log(res);
+                loadCustomerToTable();
+            }
+        });
+    });
 
     function loadCustomerToTable(){
 
@@ -403,6 +416,10 @@
 
         });
     };
+
+//Item Part/////////////////////////////////////////////////
+
+
 
 
 

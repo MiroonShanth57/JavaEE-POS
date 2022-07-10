@@ -109,11 +109,6 @@ public class CustomerServlet extends HttpServlet {
 
 
     @Override
-    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("hekkkk");
-    }
-
-    @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("I am Working");
 
@@ -171,11 +166,6 @@ public class CustomerServlet extends HttpServlet {
     }
 
 
-
-
-
-
-
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -183,24 +173,31 @@ public class CustomerServlet extends HttpServlet {
         BasicDataSource basicDataSource = (BasicDataSource) servletContext.getAttribute("basicDataSource");
 
         String customer_id=req.getParameter("CusID");
-        System.out.println(customer_id);
+        PrintWriter writer = resp.getWriter();
         resp.setContentType("application/json");
+
+
 
         try {
             Connection connection = basicDataSource.getConnection();
 
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Customer WHERE Id=?");
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Customer WHERE Customer_Id=?");
 
             preparedStatement.setObject(1,customer_id);
 
             boolean DeleteCustomer=preparedStatement.executeUpdate()>0;
 
-            PrintWriter writer = resp.getWriter();
 
             if (DeleteCustomer){
+                JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+                writer.print(objectBuilder.build());
+
                 writer.write("Successfully Delete Your Customer");
                 System.out.println("Done");
             }else {
+                JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+                writer.print(objectBuilder.build());
+
                 writer.write("Try Again...");
             }
 
